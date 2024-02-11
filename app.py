@@ -24,13 +24,14 @@ connection = psycopg2.connect(
 @socketio.on('message')
 def handle_message(message):
     print('Received message:', message)
-    # senderName = message['sender']
-    text = message['text']
+    senderName = message['sender_email']
+    text_message = message['message_text']
+    receiverName = message['receiver_email']
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(
                 "INSERT INTO chat_messages (sender_email, message_text, receiver_email) VALUES  (%s, %s, %s)",
-                 ("senderName", text, 'all')
+                 (senderName, text_message, receiverName)
             )
     socketio.emit('receive_message', message)  # Broadcast the message to all connected clients
 
